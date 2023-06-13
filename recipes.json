@@ -163,5 +163,21 @@
         ],
         "date_published": "2023-06-12 14:15:14",
         "image": "butter-chicken-ac2ff98.jpg"
+    },
+    {
+        "id": 7,
+        "name": "Test 1",
+        "description": "Test",
+        "category": "Test",
+        "cuisine": "Test",
+        "instructions": [
+            "Test"
+        ],
+        "ingredients": [
+            "1",
+            " 2"
+        ],
+        "date_published": "2023-06-13 09:19:33",
+        "image": "test.jpg"
     }
 ]

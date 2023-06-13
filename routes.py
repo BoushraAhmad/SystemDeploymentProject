@@ -90,6 +90,7 @@ def add_recipe():
             with open('recipes.json', 'r') as file:
                 existing_recipes = json.load(file)
             
+
             # Generate a unique ID for the new recipe
             new_recipe_id = len(existing_recipes) + 1
             # Create a new recipe object
@@ -111,7 +112,10 @@ def add_recipe():
                 json.dump(existing_recipes, file, indent=4)
 
             #return to homepage
-            return redirect(url_for('main.home'))
+        
+            if new_recipe in existing_recipes:
+                return redirect(url_for('main.home'))
+            
     return render_template('add-recipe.html',message=message)
 
 #view recipes
