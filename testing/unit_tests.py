@@ -24,7 +24,7 @@ class test_unit_routes(unittest.TestCase):
             'image': (BytesIO(b'TestImage'), 'test.jpg')
         }):
             response = add_recipe()
-            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 302)
            
 
 if __name__ == '__main__':
