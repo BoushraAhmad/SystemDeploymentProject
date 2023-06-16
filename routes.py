@@ -6,52 +6,27 @@ import os
 import csv
 import pandas as pd
 import requests
+import functions
 
 main = Blueprint('main',__name__)#routename = main
 
+<<<<<<< HEAD
 
 # Specify the directory where the images will be saved
 UPLOAD_FOLDER = 'static/images'
 UPLOAD_FOLDER2 = 'static/files'
+=======
+>>>>>>> 7e494eea9a6fba7bc0d90ea5406adf1007b8050c
 
-#load recipes.json
-def load_recipes_from_json():
-    with open('recipes.json', 'r') as file:
-        data = json.load(file)
-        return data
+recipes = functions.load_recipes_from_json()
 
-def get_by_id(id):
-     with open('recipes.json', 'r') as file:
-        data = json.load(file)
-        for i in data:
-            if i['id'] == id*1:
-                #print(i, file=sys.stderr)
-                return i
-        else:
-            return "not found"
-        
-def convert_xlsx_to_csv(xlsx_file, csv_file):
-    # Read the XLSX file
-    data_frame = pd.read_excel(xlsx_file)
-    
-    # Write the DataFrame to CSV file
-    data_frame.to_csv(csv_file, index=False)
 
-def download_image(url, save_path):
-    response = requests.get(url, stream=True)
-    response.raise_for_status()
-    
-    with open(save_path, 'wb') as file:
-        for chunk in response.iter_content(chunk_size=8192):
-            file.write(chunk)
-
-recipes = load_recipes_from_json()
 
 
 #homepage
 @main.route('/', methods=['GET'])
 def home():
-    recipes = load_recipes_from_json()
+    recipes = functions.load_recipes_from_json()
     #print(recipes, file=sys.stderr)
     return render_template('index.html',recipes = recipes)
 
@@ -60,6 +35,7 @@ def home():
 #add recipe
 @main.route('/addrecipe',methods=['GET','POST'])
 def add_recipe():
+<<<<<<< HEAD
     message = None
     if request.method == 'POST':
         name = request.form['name']
@@ -112,6 +88,13 @@ def add_recipe():
                 json.dump(existing_recipes, file, indent=4)
 
             #return to homepage
+=======
+    message = functions.add_recipe_function('recipes.json')
+ 
+    if message == 'Success':
+        return redirect(url_for('main.home'))
+    return render_template('add-recipe.html',message=message)
+>>>>>>> 7e494eea9a6fba7bc0d90ea5406adf1007b8050c
         
             if new_recipe in existing_recipes:
                 return redirect(url_for('main.home'))
@@ -119,25 +102,37 @@ def add_recipe():
     return render_template('add-recipe.html',message=message)
 
 #view recipes
-@main.route('/view/<int:id>',methods=['GET'])
+@main.route('/view/<int:id>',methods=['GET','POST','PUT'])
 def view_recipe(id):
-    recipe = get_by_id(id)
-    #print(recipe, file=sys.stderr)
-    return render_template('viewrecipes.html',recipes = recipe)
+    recipe = functions.view_recipe(id)
+    if recipe != "not found":
+        #print(recipe, file=sys.stderr)
+        
+        return render_template('viewrecipes.html',recipes = recipe)
 
+
+
+<<<<<<< HEAD
+=======
+#editrecipe
+@main.route('/editrecipe/<int:id>', methods=['GET','POST'])
+def edit_recipe(id):    
+    recipe = functions.get_by_id(id)
+    message = functions.edit_recipe_function(id,recipe,'recipes.json',functions.UPLOAD_FOLDER)
+    return render_template('editrecipe.html',recipe=recipe,message=message)
+
+#delete recipe
+@main.route('/delete_recipe/<int:id>', methods=['POST'])
+def delete_recipe(id):    
+    functions.delete_recipe(id)
+    return redirect(url_for('main.home'))
+
+>>>>>>> 7e494eea9a6fba7bc0d90ea5406adf1007b8050c
 #search recipe
 @main.route('/search',methods=['GET'])
 def search_recipe():
     query= request.args.get('search')
-    search_recipes = []
-    for recipe in recipes:
-        if query.lower() in recipe['name'].lower():
-            search_recipes.append(recipe)
-        elif query.lower() in recipe['category'].lower():
-            search_recipes.append(recipe)
-        elif query.lower() in recipe['cuisine'].lower():
-            search_recipes.append(recipe)
-    # print(search_recipes, file=sys.stderr)
+    search_recipes = functions.search_recipe_function(query,recipes)
     return render_template('search-results.html', query=query, recipes=search_recipes)
 
 #import recipes
@@ -145,6 +140,7 @@ def search_recipe():
 def import_recipe():
     if request.method == 'POST':
         if 'import' in request.files:
+<<<<<<< HEAD
             csvFile = request.files['import']
             filename = csvFile.filename
             csvFile.save(os.path.join(UPLOAD_FOLDER2, filename))
@@ -187,10 +183,14 @@ def import_recipe():
             with open('recipes.json', 'w') as jsonFile:
                 jsonFile.write(json.dumps(existingRecipes, indent=4))
                 
+=======
+            functions.import_recipe()                
+>>>>>>> 7e494eea9a6fba7bc0d90ea5406adf1007b8050c
             return redirect(url_for('main.home'))
         return 'Invalid file'
     return render_template('importRecipes.html')
 
+<<<<<<< HEAD
 
 
 #editrecipe
@@ -234,3 +234,20 @@ def edit_recipe(id):
         print(existing_recipes, file=sys.stderr)
 
     return render_template('editrecipe.html',recipe=recipe)
+=======
+#export recipes
+@main.route('/export', methods=['GET','POST'])
+def export_recipes():
+    response = functions.export_recipes()
+    return response
+
+@main.route('/rate/<int:id>',methods=['POST'])
+def rate_recipe(id):
+        # rating = request.form.get('rating')
+        # tt = request.form.get('tt')
+        # print(rating, file=sys.stderr)
+        # print('id=',id, file=sys.stderr)
+
+        functions.rating(id)
+        return view_recipe(id)
+>>>>>>> 7e494eea9a6fba7bc0d90ea5406adf1007b8050c
