@@ -16,21 +16,6 @@ class test_unit_routes(unittest.TestCase):
         self.app = Flask(__name__)
         self.app.config['TESTING'] = True
 
-<<<<<<< HEAD
-        with app.test_request_context('/addrecipe', method='POST', data={
-            'name': 'Test 1',
-            'description': 'Test',
-            'category': 'Test',
-            'cuisine': 'Test',
-            'instructions': 'Test',
-            'ingredients': '1, 2',
-            'image': (BytesIO(b'TestImage'), 'test.jpg')
-        }):
-            response = add_recipe()
-            self.assertEqual(response.status_code, 302)
-=======
->>>>>>> 7e494eea9a6fba7bc0d90ea5406adf1007b8050c
-           
     def test_add_recipe_success(self):
         data = {
             'name': 'Test Recipe',
